@@ -57,7 +57,7 @@ int main()
 	unsigned int addr;
 	cout << "Direct Mapped Cache Simulator\n\nPlease input the line size: ";
 	cin >> line_size; // receive the line size (variable)
-	cout <<"\n\n"
+	cout << "\n\n";
 	cache cacheSim(line_size);
 
 	for(int inst=0;inst<NO_OF_Iterations;inst++)

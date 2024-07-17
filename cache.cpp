@@ -5,8 +5,8 @@ using namespace std;
 
 cache::cache(unsigned int line_size)
 {
+	m_line_size = line_size;
 	m_offset_bits = log2(line_size);
-	m_index_bits = log2(m_line_num); 
 	m_line_num = m_cache_size / line_size;
 	m_cacheMem = new line[m_line_num];
 }
@@ -24,11 +24,11 @@ cacheResType cache::cacheSimDM(unsigned int addr)
 
 	unsigned int index, tag;
 
-	// we extract the index in the cache after ignoring the offset bits
+	// we extract the index and the tag after ignoring the offset bits (dividing by line size)
 	// line_num = index size
-	index = (addr >> m_offset_bits) % m_line_num;
+	index = (addr / m_line_size) % m_line_num;
 	// we extract the tag of the address
-	tag = (addr >> m_offset_bits) / m_line_num;
+	tag = (addr / m_line_size) / m_line_num;
 
 	// if the line at that index is valid and has the tag we want, it's a hit
 	if (m_cacheMem[index].v_bit && m_cacheMem[index].tag == tag)

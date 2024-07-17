@@ -10,8 +10,8 @@ class cache {
 	};
 	line* m_cacheMem; // the cache memory
 	const unsigned int m_cache_size = 64 * 1024; // cache size is 64 Kbytes
+	unsigned int m_line_size;
 	unsigned int m_offset_bits; 
-	unsigned int m_index_bits;
 	unsigned int m_line_num;
 	
 	
