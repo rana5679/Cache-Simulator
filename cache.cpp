@@ -1,96 +1,53 @@
-#include <iostream>
-#include  <iomanip>
+#include "cache.h"
+#include <math.h>
 
 using namespace std;
 
-#define		DBG				1
-#define		DRAM_SIZE		(64*1024*1024)
-#define		CACHE_SIZE		(64*1024)
-
-enum cacheResType {MISS=0, HIT=1};
-
-/* The following implements a random number generator */
-unsigned int m_w = 0xABABAB55;    /* must not be zero, nor 0x464fffff */
-unsigned int m_z = 0x05080902;    /* must not be zero, nor 0x9068ffff */
-unsigned int rand_()
+cache::cache(unsigned int line_size)
 {
-    m_z = 36969 * (m_z & 65535) + (m_z >> 16);
-    m_w = 18000 * (m_w & 65535) + (m_w >> 16);
-    return (m_z << 16) + m_w;  /* 32-bit result */
+	m_offset_bits = log2(line_size);
+	m_index_bits = log2(m_line_num); 
+	m_line_num = m_cache_size / line_size;
+	m_cacheMem = new line[m_line_num];
 }
 
-unsigned int memGen1()
+cache::~cache()
 {
-	static unsigned int addr=0;
-	return (addr++)%(DRAM_SIZE);
+	delete[] m_cacheMem;
 }
-
-unsigned int memGen2()
-{
-	static unsigned int addr=0;
-	return  rand_()%(24*1024);
-}
-
-unsigned int memGen3()
-{
-	return rand_()%(DRAM_SIZE);
-}
-
-unsigned int memGen4()
-{
-	static unsigned int addr=0;
-	return (addr++)%(4*1024);
-}
-
-unsigned int memGen5()
-{
-	static unsigned int addr=0;
-	return (addr++)%(1024*64);
-}
-
-unsigned int memGen6()
-{
-	static unsigned int addr=0;
-	return (addr+=32)%(64*4*1024);
-}
-
 
 // Direct Mapped Cache Simulator
-cacheResType cacheSimDM(unsigned int addr)
-{	
+cacheResType cache::cacheSimDM(unsigned int addr)
+{
 	// This function accepts the memory address for the memory transaction and 
 	// returns whether it caused a cache miss or a cache hit
 
-	// The current implementation assumes there is no cache; so, every transaction is a miss
-	return MISS;
+	unsigned int index, tag;
+
+	// we extract the index in the cache after ignoring the offset bits
+	// line_num = index size
+	index = (addr >> m_offset_bits) % m_line_num;
+	// we extract the tag of the address
+	tag = (addr >> m_offset_bits) / m_line_num;
+
+	// if the line at that index is valid and has the tag we want, it's a hit
+	if (m_cacheMem[index].v_bit && m_cacheMem[index].tag == tag)
+		return cacheResType::HIT;
+
+	// else if it's a miss, place the new tag at the index
+	m_cacheMem[index].tag == tag;
+	// and set the valid bit just in case
+	m_cacheMem[index].v_bit = true;
+
+	return cacheResType::MISS;
 }
 
 // Fully Associative Cache Simulator
-cacheResType cacheSimFA(unsigned int addr)
-{	
+cacheResType cache::cacheSimFA(unsigned int addr)
+{
 	// This function accepts the memory address for the read and 
 	// returns whether it caused a cache miss or a cache hit
 
 	// The current implementation assumes there is no cache; so, every transaction is a miss
-	return MISS;
-}
-char *msg[2] = {"Miss","Hit"};
-
-#define		NO_OF_Iterations	100		// CHange to 1,000,000
-int main()
-{
-	unsigned int hit = 0;
-	cacheResType r;
-	
-	unsigned int addr;
-	cout << "Direct Mapped Cache Simulator\n";
-
-	for(int inst=0;inst<NO_OF_Iterations;inst++)
-	{
-		addr = memGen2();
-		r = cacheSimDM(addr);
-		if(r == HIT) hit++;
-		cout <<"0x" << setfill('0') << setw(8) << hex << addr <<" ("<< msg[r] <<")\n";
-	}
-	cout << "Hit ratio = " << (100*hit/NO_OF_Iterations)<< endl;
+	return cacheResType::MISS;
 }
