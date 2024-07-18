@@ -2,6 +2,7 @@
 #include  <iomanip>
 #include <string>
 #include <math.h>
+#include <fstream>
 
 using namespace std;
 
@@ -83,13 +84,13 @@ cacheResType cacheSimDM(unsigned int addr)
 	index = (addr / line_size) % line_num;
 	// we extract the tag of the address
 	tag = (addr / line_size) / line_num;
-
+	cout << tag << "\t" << index << "\t" << cache[index].v_bit << "\t" << cache[index].tag << "\t";
 	// if the line at that index is valid and has the tag we want, it's a hit
 	if (cache[index].v_bit && cache[index].tag == tag)
 		return cacheResType::HIT;
 
 	// else if it's a miss, place the new tag at the index
-	cache[index].tag == tag;
+	cache[index].tag = tag;
 	// and set the valid bit just in case
 	cache[index].v_bit = true;
 
@@ -129,7 +130,7 @@ for(int i=0; i<line_num; i++)
 string msg[2] = {"Miss","Hit"};
 
 #define		NO_OF_Iterations	100		// CHange to 1,000,000
-int main()
+int main(int argc, char *argv[])
 {
 	unsigned int hit = 0;
 	cacheResType r;
@@ -157,33 +158,75 @@ int main()
 		cin >> cache_type;
 	}
 
-
-
-	// Running the simulation
-	// switch case for the cache types to avoid changing the code as much as possible
-	switch (cache_type) 
-	{
-		case '0': 
-			for (int inst = 0; inst < NO_OF_Iterations; inst++)
+	//we have a file input 
+	if (argc > 1)
+	{	
+		string line_temp;
+		ifstream dataFile;
+		dataFile.open(argv[1], ios::in);
+		if (dataFile.is_open())
+		{
+			int count = 0;
+			switch(cache_type)
 			{
-				addr = memGen1(); // generate a random memory address [6 possible generators]
-				r = cacheSimDM(addr); // attempt to retrieve this memory address from the cache 
-				if (r == cacheResType::HIT) hit++; // check if there was a hit or not
-				cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
+				case '0':
+					while(getline(dataFile,line_temp))
+					{
+						addr = (unsigned int)(stoi(line_temp));
+						r = cacheSimDM(addr); // attempt to retrieve this memory address from the cache
+						if (r == cacheResType::HIT) hit++; // check if there was a hit or not
+						cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
+						count++;
+					}
+				break; 
+
+				case '1':
+					while(getline(dataFile,line_temp))
+					{
+						addr = (unsigned int)(stoi(line_temp)); 
+						r = cacheSimFA(addr); // attempt to retrieve this memory address from the cache
+						if (r == cacheResType::HIT) hit++; // check if there was a hit or not
+						cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
+						count++;
+					}
+				break;
 			}
-			break;
-		case '1':
-			for (int inst = 0; inst < NO_OF_Iterations; inst++)
-			{
-				addr = memGen1(); // generate a random memory address [6 possible generators]
-				r = cacheSimFA(addr); // attempt to retrieve this memory address from the cache
-				if (r == cacheResType::HIT) hit++; // check if there was a hit or not
-				cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
-			}
-			break;
+			cout << "Hit ratio = " << dec <<(100*hit/count)<< endl; 
+
+		}
+		else 
+		{
+			cout << "\nThe File cannot be opened\n"; 
+			exit(0);
+		}
 	}
-	
-	cout << "Hit ratio = " << dec <<(100*hit/NO_OF_Iterations)<< endl; 
+	else 
+	{
+		// Running the simulation
+		// switch case for the cache types to avoid changing the code as much as possible
+		switch (cache_type) 
+		{
+			case '0': 
+				for (int inst = 0; inst < NO_OF_Iterations; inst++)
+				{
+					addr = memGen1(); // generate a random memory address [6 possible generators]
+					r = cacheSimDM(addr); // attempt to retrieve this memory address from the cache 
+					if (r == cacheResType::HIT) hit++; // check if there was a hit or not
+					cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
+				}
+				break;
+			case '1':
+				for (int inst = 0; inst < NO_OF_Iterations; inst++)
+				{
+					addr = memGen1(); // generate a random memory address [6 possible generators]
+					r = cacheSimFA(addr); // attempt to retrieve this memory address from the cache
+					if (r == cacheResType::HIT) hit++; // check if there was a hit or not
+					cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
+				}
+				break;
+		}
+		cout << "Hit ratio = " << dec <<(100*hit/NO_OF_Iterations)<< endl; 
+	}
 
 	delete[] cache;
 }
