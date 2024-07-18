@@ -142,7 +142,7 @@ int main()
 	cacheResType r;
 	
 	unsigned int addr;
-    bool cache_type;
+    char cache_type;
 
 	cout << "Direct Mapped Cache Simulator\n\nPlease input the line size: ";
 	cin >> line_size; // receive the line size
@@ -158,7 +158,7 @@ int main()
 	cin >> cache_type;
 
 	// validation function to ensure that the input character is correct
-	while (cache_type != 0 && cache_type != 1) 
+	while (cache_type != '0' && cache_type != '1') 
 	{
 		cout << "Invalid input\n Try again: ";
 		cin >> cache_type;
