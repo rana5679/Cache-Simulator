@@ -99,10 +99,30 @@ cacheResType cacheSimDM(unsigned int addr)
 // Fully Associative Cache Simulator
 cacheResType cacheSimFA(unsigned int addr)
 {	
-	// This function accepts the memory address for the read and 
-	// returns whether it caused a cache miss or a cache hit
+	unsigned int tag;
+	tag = addr / line_size;
 
-	// The current implementation assumes there is no cache; so, every transaction is a miss
+	// reads the tags of the cache lines sequencially 
+for(int i=0; i<line_num; i++)
+    {
+		// checks if the tag exists in the cache if it does then its a hit
+        if(cache[i].v_bit && cache[i].tag == tag)
+        {
+            return cacheResType::HIT;
+        }
+		// if it does not exist in the cache then it adds it to the first available space in the cache
+         if(cache[i].v_bit == 0)
+        {
+            cache[i].tag = tag;
+            cache[i].v_bit = true;
+            return cacheResType::MISS;
+        }
+                
+    }
+
+// if there is no space left and no hit then it overwrites a random cache line
+ cache[rand_() % line_num].tag = tag;
+    
 	return cacheResType::MISS;
 }
 
@@ -115,9 +135,9 @@ int main()
 	cacheResType r;
 	
 	unsigned int addr;
-	unsigned char cache_type;
+    unsigned char cache_type;
 
-	cout << "Direct Mapped Cache Simulator\n\nPlease input the line size: ";
+	cout << "Cache Simulator\n\nPlease input the line size: ";
 	cin >> line_size; // receive the line size
 	cout << "\n\n";
 
@@ -137,6 +157,8 @@ int main()
 		cin >> cache_type;
 	}
 
+
+
 	// Running the simulation
 	// switch case for the cache types to avoid changing the code as much as possible
 	switch (cache_type) 
@@ -144,7 +166,7 @@ int main()
 		case '0': 
 			for (int inst = 0; inst < NO_OF_Iterations; inst++)
 			{
-				addr = memGen2(); // generate a random memory address [6 possible generators]
+				addr = memGen1(); // generate a random memory address [6 possible generators]
 				r = cacheSimDM(addr); // attempt to retrieve this memory address from the cache 
 				if (r == cacheResType::HIT) hit++; // check if there was a hit or not
 				cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
@@ -153,7 +175,7 @@ int main()
 		case '1':
 			for (int inst = 0; inst < NO_OF_Iterations; inst++)
 			{
-				addr = memGen2(); // generate a random memory address [6 possible generators]
+				addr = memGen1(); // generate a random memory address [6 possible generators]
 				r = cacheSimFA(addr); // attempt to retrieve this memory address from the cache
 				if (r == cacheResType::HIT) hit++; // check if there was a hit or not
 				cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
@@ -161,7 +183,7 @@ int main()
 			break;
 	}
 	
-	cout << "Hit ratio = " << (100*hit/NO_OF_Iterations)<< endl; 
+	cout << "Hit ratio = " << dec <<(100*hit/NO_OF_Iterations)<< endl; 
 
 	delete[] cache;
 }
