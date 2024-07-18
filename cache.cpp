@@ -102,33 +102,26 @@ cacheResType cacheSimFA(unsigned int addr)
 	unsigned int tag;
 	tag = addr / line_size;
 
-  // checks the v bit of the last element to see if there is a capacity miss
-  if(cache[line_num - 1].v_bit == true)
+	// reads the tags of the cache lines sequencially 
+for(int i=0; i<line_num; i++)
     {
-		// if there is no space left then it overwrites a random cache line
-        cache[memGen2() % line_num].tag = tag;
-    }
-	// if there is still space in the cache
-    else
-    {
-		// reads the tags of the cache lines sequencially 
-        for(int i=0; i<line_num; i++)
+		// checks if the tag exists in the cache if it does then its a hit
+        if(cache[i].tag == tag)
         {
-			// checks if the tag exists in the cache if it does then its a hit
-            if(cache[i].tag == tag)
-            {
-                return cacheResType::HIT;
-            }
-			// if it does not exist in the cache then it adds it to the first available space in the cache
-            if(cache[i].v_bit == 0)
-            {
-                cache[i].tag = tag;
-                cache[i].v_bit = true;
-                break;
-            }
-                
+            return cacheResType::HIT;
         }
+		// if it does not exist in the cache then it adds it to the first available space in the cache
+         if(cache[i].v_bit == 0)
+        {
+            cache[i].tag = tag;
+            cache[i].v_bit = true;
+            return cacheResType::MISS;
+        }
+                
     }
+
+// if there is no space left and no hit then it overwrites a random cache line
+ cache[rand_() % line_num].tag = tag;
     
 	return cacheResType::MISS;
 }
@@ -142,7 +135,7 @@ int main()
 	cacheResType r;
 	
 	unsigned int addr;
-    bool cache_type;
+    unsigned int cache_type;
 
 	cout << "Cache Simulator\n\nPlease input the line size: ";
 	cin >> line_size; // receive the line size
@@ -173,7 +166,7 @@ int main()
 		case 0: 
 			for (int inst = 0; inst < NO_OF_Iterations; inst++)
 			{
-				addr = memGen2(); // generate a random memory address [6 possible generators]
+				addr = memGen1(); // generate a random memory address [6 possible generators]
 				r = cacheSimDM(addr); // attempt to retrieve this memory address from the cache 
 				if (r == cacheResType::HIT) hit++; // check if there was a hit or not
 				cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
@@ -182,7 +175,7 @@ int main()
 		case 1:
 			for (int inst = 0; inst < NO_OF_Iterations; inst++)
 			{
-				addr = memGen2(); // generate a random memory address [6 possible generators]
+				addr = memGen1(); // generate a random memory address [6 possible generators]
 				r = cacheSimFA(addr); // attempt to retrieve this memory address from the cache
 				if (r == cacheResType::HIT) hit++; // check if there was a hit or not
 				cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
@@ -190,7 +183,7 @@ int main()
 			break;
 	}
 	
-	cout << "Hit ratio = " << (100*hit/NO_OF_Iterations)<< endl; 
+	cout << "Hit ratio = " << dec <<(100*hit/NO_OF_Iterations)<< endl; 
 
 	delete[] cache;
 }
