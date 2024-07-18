@@ -99,10 +99,37 @@ cacheResType cacheSimDM(unsigned int addr)
 // Fully Associative Cache Simulator
 cacheResType cacheSimFA(unsigned int addr)
 {	
-	// This function accepts the memory address for the read and 
-	// returns whether it caused a cache miss or a cache hit
+	unsigned int tag;
+	tag = addr / line_size;
 
-	// The current implementation assumes there is no cache; so, every transaction is a miss
+  // checks the v bit of the last element to see if there is a capacity miss
+  if(cache[line_num - 1].v_bit == true)
+    {
+		// if there is no space left then it overwrites a random cache line
+        cache[memGen2() % line_num].tag = tag;
+    }
+	// if there is still space in the cache
+    else
+    {
+		// reads the tags of the cache lines sequencially 
+        for(int i=0; i<line_num; i++)
+        {
+			// checks if the tag exists in the cache if it does then its a hit
+            if(cache[i].tag == tag)
+            {
+                return cacheResType::HIT;
+            }
+			// if it does not exist in the cache then it adds it to the first available space in the cache
+            if(cache[i].v_bit == 0)
+            {
+                cache[i].tag = tag;
+                cache[i].v_bit = true;
+                break;
+            }
+                
+        }
+    }
+    
 	return cacheResType::MISS;
 }
 
@@ -115,7 +142,7 @@ int main()
 	cacheResType r;
 	
 	unsigned int addr;
-	unsigned char cache_type;
+    bool cache_type;
 
 	cout << "Direct Mapped Cache Simulator\n\nPlease input the line size: ";
 	cin >> line_size; // receive the line size
@@ -131,17 +158,19 @@ int main()
 	cin >> cache_type;
 
 	// validation function to ensure that the input character is correct
-	while (cache_type != '0' && cache_type != '1') 
+	while (cache_type != 0 && cache_type != 1) 
 	{
 		cout << "Invalid input\n Try again: ";
 		cin >> cache_type;
 	}
 
+
+
 	// Running the simulation
 	// switch case for the cache types to avoid changing the code as much as possible
 	switch (cache_type) 
 	{
-		case '0': 
+		case 0: 
 			for (int inst = 0; inst < NO_OF_Iterations; inst++)
 			{
 				addr = memGen2(); // generate a random memory address [6 possible generators]
@@ -150,7 +179,7 @@ int main()
 				cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
 			}
 			break;
-		case '1':
+		case 1:
 			for (int inst = 0; inst < NO_OF_Iterations; inst++)
 			{
 				addr = memGen2(); // generate a random memory address [6 possible generators]
