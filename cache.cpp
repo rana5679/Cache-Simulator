@@ -106,7 +106,7 @@ cacheResType cacheSimFA(unsigned int addr)
 for(int i=0; i<line_num; i++)
     {
 		// checks if the tag exists in the cache if it does then its a hit
-        if(cache[i].tag == tag)
+        if(cache[i].v_bit && cache[i].tag == tag)
         {
             return cacheResType::HIT;
         }
@@ -135,7 +135,7 @@ int main()
 	cacheResType r;
 	
 	unsigned int addr;
-    unsigned int cache_type;
+    unsigned char cache_type;
 
 	cout << "Cache Simulator\n\nPlease input the line size: ";
 	cin >> line_size; // receive the line size
@@ -151,7 +151,7 @@ int main()
 	cin >> cache_type;
 
 	// validation function to ensure that the input character is correct
-	while (cache_type != 0 && cache_type != 1) 
+	while (cache_type != '0' && cache_type != '1') 
 	{
 		cout << "Invalid input\n Try again: ";
 		cin >> cache_type;
@@ -163,7 +163,7 @@ int main()
 	// switch case for the cache types to avoid changing the code as much as possible
 	switch (cache_type) 
 	{
-		case 0: 
+		case '0': 
 			for (int inst = 0; inst < NO_OF_Iterations; inst++)
 			{
 				addr = memGen1(); // generate a random memory address [6 possible generators]
@@ -172,7 +172,7 @@ int main()
 				cout << "0x" << setfill('0') << setw(8) << hex << addr << " (" << msg[(unsigned int)r] << ")\n"; // output the requested address
 			}
 			break;
-		case 1:
+		case '1':
 			for (int inst = 0; inst < NO_OF_Iterations; inst++)
 			{
 				addr = memGen1(); // generate a random memory address [6 possible generators]
