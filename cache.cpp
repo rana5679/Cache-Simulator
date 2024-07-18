@@ -144,7 +144,7 @@ int main()
 	unsigned int addr;
     bool cache_type;
 
-	cout << "Direct Mapped Cache Simulator\n\nPlease input the line size: ";
+	cout << "Cache Simulator\n\nPlease input the line size: ";
 	cin >> line_size; // receive the line size
 	cout << "\n\n";
 
