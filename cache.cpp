@@ -64,7 +64,7 @@ unsigned int memGen4()
 unsigned int memGen5()
 {
 	static unsigned int addr=0;
-	return (addr++)%(1024*64);
+	return (addr++)%(64*1024);
 }
 
 unsigned int memGen6()
