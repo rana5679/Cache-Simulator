@@ -8,12 +8,14 @@ using namespace std;
 
 #define		DBG				1
 #define		DRAM_SIZE		(64*1024*1024) // 64 Mbytes
-#define		CACHE_SIZE		(64*1024) // 64 Kbytes
+#define		CACHE_SIZE		(64)//64*1024 // 64 Kbytes
 
 enum class cacheResType {MISS=0, HIT=1}; // types of cache results
+unsigned int rep;
 
 // lines in the cache
-struct line { 
+struct line
+{ 
 	bool v_bit = 0; // the valid bit
 	int tag; // the tag stored in the cache
 };
@@ -100,30 +102,33 @@ cacheResType cacheSimDM(unsigned int addr)
 // Fully Associative Cache Simulator
 cacheResType cacheSimFA(unsigned int addr)
 {	
+	cout << rep << "\t";
 	unsigned int tag;
 	tag = addr / line_size;
 
 	// reads the tags of the cache lines sequencially 
-for(int i=0; i<line_num; i++)
-    {
-		// checks if the tag exists in the cache if it does then its a hit
-        if(cache[i].v_bit && cache[i].tag == tag)
-        {
-            return cacheResType::HIT;
-        }
-		// if it does not exist in the cache then it adds it to the first available space in the cache
-         if(cache[i].v_bit == 0)
-        {
-            cache[i].tag = tag;
-            cache[i].v_bit = true;
-            return cacheResType::MISS;
-        }
-                
-    }
+	for(int i=0; i<line_num; i++)
+		{
+			// checks if the tag exists in the cache if it does then its a hit
+			if(cache[i].v_bit && cache[i].tag == tag)
+			{
+				return cacheResType::HIT;
+			}
+			// if it does not exist in the cache then it adds it to the first available space in the cache
+			if(cache[i].v_bit == 0)
+			{
+				cache[i].tag = tag;
+				cache[i].v_bit = true;
+				return cacheResType::MISS;
+			}
+					
+		}
 
-// if there is no space left and no hit then it overwrites a random cache line
- cache[rand_() % line_num].tag = tag;
-    
+	// if there is no space left and no hit then it overwrites a random cache line
+	//cache[rand_() % line_num].tag = tag;
+	rep = rep % line_num; 
+	cache[rep].tag = tag; 
+	rep++;
 	return cacheResType::MISS;
 }
 
@@ -132,6 +137,7 @@ string msg[2] = {"Miss","Hit"};
 #define		NO_OF_Iterations	100		// CHange to 1,000,000
 int main(int argc, char *argv[])
 {
+	rep = 0; 
 	unsigned int hit = 0;
 	cacheResType r;
 	
