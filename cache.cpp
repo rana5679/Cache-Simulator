@@ -8,7 +8,7 @@ using namespace std;
 
 #define		DBG				1
 #define		DRAM_SIZE		(64*1024*1024) // 64 Mbytes
-#define		CACHE_SIZE		(64)//64*1024 // 64 Kbytes
+#define		CACHE_SIZE		(64*1024) // 64 Kbytes
 
 enum class cacheResType {MISS=0, HIT=1}; // types of cache results
 unsigned int rep;
@@ -86,7 +86,7 @@ cacheResType cacheSimDM(unsigned int addr)
 	index = (addr / line_size) % line_num;
 	// we extract the tag of the address
 	tag = (addr / line_size) / line_num;
-	cout << tag << "\t" << index << "\t" << cache[index].v_bit << "\t" << cache[index].tag << "\t";
+	// cout << tag << "\t" << index << "\t" << cache[index].v_bit << "\t" << cache[index].tag << "\t";
 	// if the line at that index is valid and has the tag we want, it's a hit
 	if (cache[index].v_bit && cache[index].tag == tag)
 		return cacheResType::HIT;
@@ -102,7 +102,7 @@ cacheResType cacheSimDM(unsigned int addr)
 // Fully Associative Cache Simulator
 cacheResType cacheSimFA(unsigned int addr)
 {	
-	cout << rep << "\t";
+	//cout << rep << "\t";
 	unsigned int tag;
 	tag = addr / line_size;
 
@@ -125,16 +125,16 @@ cacheResType cacheSimFA(unsigned int addr)
 		}
 
 	// if there is no space left and no hit then it overwrites a random cache line
-	//cache[rand_() % line_num].tag = tag;
-	rep = rep % line_num; 
-	cache[rep].tag = tag; 
-	rep++;
+	cache[rand_() % line_num].tag = tag;
+	//rep = rep % line_num; 
+	//cache[rep].tag = tag; 
+	//rep++;
 	return cacheResType::MISS;
 }
 
 string msg[2] = {"Miss","Hit"};
 
-#define		NO_OF_Iterations	100		// CHange to 1,000,000
+#define		NO_OF_Iterations	1000000		// CHange to 1,000,000
 int main(int argc, char *argv[])
 {
 	rep = 0; 
