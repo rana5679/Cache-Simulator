@@ -8,7 +8,7 @@ using namespace std;
 
 #define		DBG				1
 #define		DRAM_SIZE		(64*1024*1024) // 64 Mbytes
-#define		CACHE_SIZE		(4)//64*1024 // 64 Kbytes
+#define		CACHE_SIZE		(64)//64*1024 // 64 Kbytes
 
 enum class cacheResType {MISS=0, HIT=1}; // types of cache results
 unsigned int rep;
@@ -127,8 +127,8 @@ cacheResType cacheSimFA(unsigned int addr)
 	// if there is no space left and no hit then it overwrites a random cache line
 	//cache[rand_() % line_num].tag = tag;
 	rep = rep % line_num; 
-	rep++;
 	cache[rep].tag = tag; 
+	rep++;
 	return cacheResType::MISS;
 }
 
