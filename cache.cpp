@@ -8,7 +8,7 @@ using namespace std;
 
 #define		DBG				1
 #define		DRAM_SIZE		(64*1024*1024) // 64 Mbytes
-#define		CACHE_SIZE		(64*1024) // 64 Kbytes
+#define		CACHE_SIZE		(8) // 64 Kbytes
 
 enum class cacheResType {MISS=0, HIT=1}; // types of cache results
 unsigned int rep;
