@@ -5,6 +5,8 @@ This project was created for the Computer Organization & Assembly Language cours
   
 [...]
 
+## Repo Content
+
 ## How to build 
 Building the program can be done on the command line using the following commands:
 [...]
