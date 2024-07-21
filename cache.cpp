@@ -164,18 +164,22 @@ int main(int argc, char *argv[])
 		cin >> cache_type;
 	}
 
-	//we have a file input 
+	// For file input
 	if (argc > 1)
 	{	
 		string line_temp;
 		ifstream dataFile;
 		dataFile.open(argv[1], ios::in);
+
 		if (dataFile.is_open())
 		{
 			int count = 0;
+
+			// switch case for cache type
 			switch(cache_type)
 			{
 				case '0':
+					// read every line and determine whether the address causes a hit or a miss
 					while(getline(dataFile,line_temp))
 					{
 						addr = (unsigned int)(stoi(line_temp));
@@ -187,6 +191,7 @@ int main(int argc, char *argv[])
 				break; 
 
 				case '1':
+					// read every line and determine whether the address causes a hit or a miss
 					while(getline(dataFile,line_temp))
 					{
 						addr = (unsigned int)(stoi(line_temp)); 
@@ -206,13 +211,14 @@ int main(int argc, char *argv[])
 			exit(0);
 		}
 	}
-	else 
+	else  // if no file input, default to the stored values
 	{
 		// Running the simulation
 		// switch case for the cache types to avoid changing the code as much as possible
 		switch (cache_type) 
 		{
 			case '0': 
+				// Generate n memory addresses depending on the Generator type
 				for (int inst = 0; inst < NO_OF_Iterations; inst++)
 				{
 					addr = memGen1(); // generate a random memory address [6 possible generators]
@@ -222,6 +228,7 @@ int main(int argc, char *argv[])
 				}
 				break;
 			case '1':
+				// Generate n memory addresses depending on the Generator type
 				for (int inst = 0; inst < NO_OF_Iterations; inst++)
 				{
 					addr = memGen1(); // generate a random memory address [6 possible generators]
