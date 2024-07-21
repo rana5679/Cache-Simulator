@@ -6,6 +6,8 @@ This project was created for the Computer Organization & Assembly Language cours
 The project simulates a set-associative cache with its special cases, Direct Map and Fully Associative caches. It aims to illustrate the effect of different cache parameters on its performance which helps us understand how the cache works and how to analyze the effect of the parameters on the hit ratio. 
 
 ## Repo Content
+- Tests
+- cache.cpp
 
 ## How to build 
 Building the program can be done on the command line using the following commands:
