@@ -32,11 +32,11 @@ That can be done using the following commands:
 
 ## Test cases 
 Note: We modified the cache size and the FA replacement policy (Rand -> FIFO) for testing purposes
-- Test1.txt:- cache size = 4, line size = 2, hit ratio_DM = 50%, hit_ratio_FA = 50%, 
-- Test2.txt:- cache size = 16, line size = 2, hit ratio_DM = 44%, hit ratio_FA = 44%,
-- Test3.txt:- cache size = 128, line size = 16, hit ratio_DM = 40%, hit ratio_FA = 50%, 
-- Test4.txt:- cache size = , line size = , hit ratio_DM = , hit ratio_FA = 
-- Test5.txt:- cache size = , line size = , hit ratio_DM = , hit ratio_FA = 
+- Test1.txt:- cache size = 4 bytes, line size = 2, hit ratio_DM = 50%, hit_ratio_FA = 50%, testing re-accessing of elements.
+- Test2.txt:- cache size = 16 bytes, line size = 2, hit ratio_DM = 44%, hit ratio_FA = 44%, testing random access in DM and replacement policies efficiency in FA. 
+- Test3.txt:- cache size = 128 bytes, line size = 16, hit ratio_DM = 40%, hit ratio_FA = 50%, testing conflict misses in DM and temporal locality in FA. 
+- Test4.txt:- cache size = 16 bytes , line size = 1, hit ratio_DM = 0%, sequential access DM
+- Test5.txt:- cache size = 16 bytes, line size = 1, hit ratio_FA = 27% , random access FA
 
 ## Collaborators
 * [Arwa AbdelKarim](https://github.com/arwaabdelkarim)
