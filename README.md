@@ -55,7 +55,7 @@ Note: The cache size and FA replacement policy (RAND -> FIFO) were changed for t
 - Test4: 
    - Tests: Sequential access in DM.
    - Cache cache size = 16 bytes , line size = 1, expected hit ratio_DM = 0% 
-- Test5: cache size
+- Test5: 
    - Tests: Random Access in FA
    - Cache cache size = 16 bytes, line size = 1, expected hit ratio_FA = 27% 
 
