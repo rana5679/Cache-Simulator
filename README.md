@@ -54,10 +54,10 @@ Note: The cache size and FA replacement policy (RAND -> FIFO) were changed for t
    - Cache Specifications: cache size = 128 bytes, line size = 16, expected hit ratio_DM = 40%, expected hit ratio_FA = 50%
 - Test4: 
    - Tests: Sequential access in DM.
-   - Cache cache size = 16 bytes , line size = 1, expected hit ratio_DM = 0% 
+   - Cache size = 16 bytes , line size = 1, expected hit ratio_DM = 0% 
 - Test5: 
    - Tests: Random Access in FA
-   - Cache cache size = 16 bytes, line size = 1, expected hit ratio_FA = 27% 
+   - Cache size = 16 bytes, line size = 1, expected hit ratio_FA = 27% 
 
 ## Collaborators
 * [Arwa AbdelKarim](https://github.com/arwaabdelkarim)
